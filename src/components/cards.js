@@ -71,9 +71,7 @@ function createCard(cardData, deleteCard) {
 
     popUpImageScreen.classList.add(popUpIsAnimated);
 
-    setTimeout(() => {
-      openModal(popUpImageScreen);
-    }, 10);
+    openModal(popUpImageScreen);
   });
 
   return cardElement;

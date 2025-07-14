@@ -39,7 +39,10 @@ function handleOverlayClick(evt) {
 
 //openModal
 function openModal(modal) {
-  modal.classList.add(popUpClassOpened);
+  setTimeout(() => {
+    modal.classList.add(popUpClassOpened);
+  }, 10);
+
   document.addEventListener("keydown", handleEscapeKey);
   document.addEventListener("click", handleOverlayClick);
 }
@@ -77,12 +80,6 @@ function popUpEdit(evt) {
 
   console.log(name);
 }
-
-document.addEventListener("animationend", function (e) {
-  if (e.animationName === "fade-out") {
-    e.target.classList.remove("did-fade-in");
-  }
-});
 
 export {
   openModal,

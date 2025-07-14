@@ -32,9 +32,7 @@ initialCards.forEach((cardData) => {
 
 buttonCreateCard.addEventListener("click", () => {
   popUpNewCard.classList.add(popUpIsAnimated);
-  setTimeout(() => {
-    openModal(popUpNewCard);
-  }, 10);
+  openModal(popUpNewCard);
 });
 
 buttonProfileEdit.addEventListener("click", () => {
@@ -45,10 +43,7 @@ buttonProfileEdit.addEventListener("click", () => {
   editProfileForm.elements["description"].value = currentDescription;
 
   popupTypeEdit.classList.add(popUpIsAnimated);
-
-  setTimeout(() => {
-    openModal(popupTypeEdit);
-  }, 10);
+  openModal(popupTypeEdit);
 });
 
 document.querySelectorAll(".popup .popup__close").forEach((button) => {
