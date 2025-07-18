@@ -1,16 +1,6 @@
-import {
-  createCard,
-  cardsContainer,
-  deleteCard,
-  popUpNewCard,
-} from "./cards.js";
-
 // Styles
 const popUpClassOpened = "popup_is-opened";
 const popUpIsAnimated = "popup_is-animated";
-
-// Popups
-const popupTypeEdit = document.querySelector(".popup_type_edit");
 
 // forms
 const newCardForm = document.forms["new-place"];
@@ -21,72 +11,43 @@ const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 
 //closeModal
-const closeModal = () => {
-  document.querySelector(".popup_is-opened").classList.remove(popUpClassOpened);
+const closeModal = (popup) => {
+  popup.classList.remove(popUpClassOpened);
+  document.removeEventListener("keydown", handleEscapeKey);
 };
 
 function handleEscapeKey(evt) {
   if (evt.key === "Escape") {
-    closeModal();
+    const openedPopup = document.querySelector(".popup_is-opened");
+    if (openedPopup) {
+      closeModal(openedPopup);
+    }
   }
 }
 
-function handleOverlayClick(evt) {
-  if (evt.target.classList.contains("popup_is-opened")) {
-    closeModal();
-  }
-}
+document.querySelectorAll(".popup").forEach((popup) => {
+  // Обработчик клика по оверлею
+  popup.addEventListener("mousedown", (evt) => {
+    if (evt.target === popup) {
+      closeModal(popup);
+    }
+  });
+});
 
 //openModal
 function openModal(modal) {
-  setTimeout(() => {
-    modal.classList.add(popUpClassOpened);
-  }, 10);
+  modal.classList.add(popUpIsAnimated);
 
+  requestAnimationFrame(() => {
+    modal.classList.add("popup_is-opened");
+  });
   document.addEventListener("keydown", handleEscapeKey);
-  document.addEventListener("click", handleOverlayClick);
-}
-// newCardSubmit
-function newCardSubmit(evt) {
-  evt.preventDefault();
-
-  const placeName = newCardForm.elements["place-name"].value;
-  const imageUrl = newCardForm.elements.link.value;
-
-  const newCardData = {
-    name: placeName,
-    link: imageUrl,
-  };
-
-  const cardElement = createCard(newCardData, deleteCard);
-
-  newCardForm.reset();
-  popUpNewCard.classList.remove(popUpClassOpened);
-
-  cardsContainer.append(cardElement);
-}
-
-// popUpEdit
-function popUpEdit(evt) {
-  evt.preventDefault();
-
-  const name = editProfileForm.elements["name"].value;
-  const description = editProfileForm.elements["description"].value;
-
-  profileTitle.textContent = name;
-  profileDescription.textContent = description;
-
-  popupTypeEdit.classList.remove(popUpClassOpened);
-
-  console.log(name);
 }
 
 export {
   openModal,
   closeModal,
-  newCardSubmit,
-  popUpEdit,
-  popUpIsAnimated,
+  popUpClassOpened,
   profileTitle,
   profileDescription,
   newCardForm,

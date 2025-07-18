@@ -1,19 +1,17 @@
 import {
   initialCards,
-  cardsContainer,
   createCard,
   deleteCard,
+  likeCard,
 } from "./components/cards.js";
 import {
   openModal,
   closeModal,
-  newCardSubmit,
   newCardForm,
-  popUpEdit,
   editProfileForm,
   profileTitle,
   profileDescription,
-  popUpIsAnimated,
+  popUpClassOpened,
 } from "./components/modal.js";
 import "./pages/index.css";
 
@@ -25,13 +23,19 @@ const buttonProfileEdit = document.querySelector(".profile__edit-button");
 const popUpNewCard = document.querySelector(".popup_type_new-card");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
 
+// Container
+const cardsContainer = document.querySelector(".places__list");
+
+// Image showing
+const popUpImageScreen = document.querySelector(".popup_type_image");
+const popUpImage = document.querySelector(".popup__image");
+
 initialCards.forEach((cardData) => {
-  const cardElement = createCard(cardData, deleteCard);
+  const cardElement = createCard(cardData, deleteCard, likeCard);
   cardsContainer.append(cardElement);
 });
 
 buttonCreateCard.addEventListener("click", () => {
-  popUpNewCard.classList.add(popUpIsAnimated);
   openModal(popUpNewCard);
 });
 
@@ -42,14 +46,68 @@ buttonProfileEdit.addEventListener("click", () => {
   editProfileForm.elements["name"].value = currentName;
   editProfileForm.elements["description"].value = currentDescription;
 
-  popupTypeEdit.classList.add(popUpIsAnimated);
   openModal(popupTypeEdit);
 });
 
 document.querySelectorAll(".popup .popup__close").forEach((button) => {
-  button.addEventListener("click", closeModal);
+  button.addEventListener("click", (evt) => {
+    const popup = evt.target.closest(".popup");
+
+    if (popup) {
+      closeModal(popup);
+    }
+  });
 });
 
-newCardForm.addEventListener("submit", newCardSubmit);
+// modal cards
+function handleCardImageClick({ target }) {
+  const { src: link, alt: name } = target;
 
+  popUpImageScreen.querySelector(".popup__caption").textContent = name;
+  popUpImage.src = link;
+
+  openModal(popUpImageScreen);
+}
+
+// open image modal
+document.querySelectorAll(".card__image").forEach((image) => {
+  image.addEventListener("click", handleCardImageClick);
+});
+
+// newCardSubmit
+function newCardSubmit(evt, cardsContainer) {
+  evt.preventDefault();
+
+  const placeName = newCardForm.elements["place-name"].value;
+  const imageUrl = newCardForm.elements.link.value;
+
+  const newCardData = {
+    name: placeName,
+    link: imageUrl,
+  };
+
+  const cardElement = createCard(newCardData, deleteCard, likeCard);
+
+  newCardForm.reset();
+  closeModal(popUpNewCard);
+
+  cardsContainer.append(cardElement);
+}
+
+// popUpEdit
+function popUpEdit(evt) {
+  evt.preventDefault();
+
+  const name = editProfileForm.elements["name"].value;
+  const description = editProfileForm.elements["description"].value;
+
+  profileTitle.textContent = name;
+  profileDescription.textContent = description;
+
+  popupTypeEdit.classList.remove(popUpClassOpened);
+}
+
+newCardForm.addEventListener("submit", (evt) =>
+  newCardSubmit(evt, cardsContainer)
+);
 editProfileForm.addEventListener("submit", popUpEdit);
